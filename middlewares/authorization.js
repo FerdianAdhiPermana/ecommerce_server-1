@@ -1,17 +1,17 @@
-const { User, Product} = require('../models/index')
+const { user, product} = require('../models/index')
 
 function authorization(req, res, next){
     try {
         if(req.params.id){
-            Product.findByPk(req.params.id)
+            product.findByPk(req.params.id)
             .then(product=>{
                 if(!product) throw {msg: "Product not found"}
+                console.log(req.loggedInUser.role)
                 if(req.loggedInUser.role === 'admin'){
                     next()
                 } 
                 else throw {msg: "not authorized", code: 500}
             }).catch(err=>{
-                console.log(err)
                 next(err.message)
             })
         } else {
@@ -23,7 +23,7 @@ function authorization(req, res, next){
             }
         }
     } catch (err) {
-        // console.log(err,'akdjfldas;l')
+        console.log(err)
         next(err)
     }
 }

@@ -55,14 +55,14 @@ class productController{
             const product = {
                 name : data.name,
                 image_url: data.image_url,
-                status:  data.status,
+                price:  data.price,
                 stock:  data.stock,
                 updatedAt: new Date()
             }
 
             model.findByPk(req.params.id)
               .then(data=>{ 
-                if(req.loggedIn.email !== 'admin@shop.com'){
+                if(req.loggedInUser.role !== 'admin'){
                   return res.status(403).json(response.onSuccess(" admin only",data))
                 }
                  if(!data){
@@ -89,7 +89,7 @@ class productController{
         try {
             model.findByPk(req.params.id)
               .then(data=>{
-                if(req.loggedIn.email !== 'admin@shop.com'){
+                if(req.loggedInUser.role !== 'admin'){
                   return res.status(403).json(response.onSuccess(" admin only",data))
                 }
                 if(!data){
@@ -100,10 +100,14 @@ class productController{
                     res.status(200).json(response.onSuccess("success delete product",data))  
                 })
               })
-              .catch(err=>
+              .catch(err=>{
+                console.log(err)
                 next(err)
+
+              }
               )
          } catch (err) {
+           console.log(err)
            next(err)
          }        
     }

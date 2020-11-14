@@ -9,14 +9,22 @@ async function authentication(req, res, next) {
         }
         else{
             let decoded = verifyToken(token)
-            let dataUser = await user.findOne({
+            
+            user.findOne({
                 where: { email: decoded.email }
+            })
+            .then(dataUser=>{
+                if(!dataUser) throw { msg: "authentication failed"}
+                else{
+                    req.loggedInUser = decoded
+                    next()
+                }
+
             })            
-            if(!dataUser) throw { msg: "authentication failed"}
-            else{
-                req.loggedInUser = decoded
-                next()
-            }
+            .catch(err=>{
+                console.log(err)
+                next(err)                
+            })
         }
     } catch (err) {
         next(err)
