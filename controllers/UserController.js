@@ -4,6 +4,33 @@ const generateToken = require('../helpers/jwt').generateToken
 const response = require("../helpers/response")
 
 class UserController{
+    static register(req, res, next){
+        try {
+            const { email, password} = req.body
+            user.findOne({
+                where:{
+                    email:email
+                }
+            })
+            .then(data=>{
+                if(data)
+                    return res.status(409).json(response.onFailed("email already exists"))
+
+                user.create({
+                    email:email,
+                    password:password,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                })
+                    .catch((err) => {
+                        next(err)
+                    })            
+
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
         static login(req, res, next){
         try {
             console.log(req.body)

@@ -13,6 +13,12 @@ function errorhandler(err, req, res, next){
             errors = errorList
             status = 400
             break;
+            case 'SequelizeUniqueConstraintError':
+            err.errors.forEach(el => {
+                errors.push(el.message, 'email already exist')
+            })
+            code = 400
+            break
         default:
             errors = err.msg
             status = err.code || 500

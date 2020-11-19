@@ -13,13 +13,21 @@ module.exports = {
      * }], {});
     */
 
-   await queryInterface.bulkInsert('users', [{
+   await queryInterface.bulkInsert('users', [
+     {
         email: "admin@shop.com",
         password: bcrypt.hashSync('12345678'),
         role:'admin',
         createdAt: new Date(),
         updatedAt: new Date()
-    }], {});
+    },
+    {
+      email: 'ferdian@gmail.com',
+      password: bcrypt.hashSync('12345678'),
+      createdAt: new Date(),
+      updatedAt: new Date()
+   }
+  ], {});
   },
 
   down: async (queryInterface, Sequelize) => {

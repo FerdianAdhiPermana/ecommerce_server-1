@@ -1,4 +1,4 @@
-const { user, product} = require('../models/index')
+const { user, product,cart} = require('../models/index')
 
 function authorization(req, res, next){
     try {
@@ -17,6 +17,34 @@ function authorization(req, res, next){
         } else {
 
             if(req.loggedInUser.role === 'admin'){
+                next()
+            }else{
+                throw {msg: "not authorized", code: 500}
+            }
+        }
+    } catch (err) {
+        console.log(err)
+        next(err)
+    }
+}
+
+function authorizationCart(req, res, next){
+    try {
+        if(req.params.id){
+            cart.findByPk(req.params.id)
+            .then(cart=>{
+                if(!cart) throw {msg: "Cart not found"}
+                console.log(req.loggedInUser)
+                if(req.loggedInUser){
+                    next()
+                } 
+                else throw {msg: "not authorized", code: 500}
+            }).catch(err=>{
+                next(err.message)
+            })
+        } else {
+
+            if(req.loggedInUser){
                 next()
             }else{
                 throw {msg: "not authorized", code: 500}
